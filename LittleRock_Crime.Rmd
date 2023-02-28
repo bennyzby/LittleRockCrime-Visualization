@@ -1,0 +1,66 @@
+---
+title: "LittleRock_Crime"
+author: "Benyan Zhang"
+date: "2023-02-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+
+df <- read.csv('lrpd(cleaned).csv')
+```
+```{r}
+df_weekday <- df %>%
+  group_by(CRIME_TYPE, DayOfWeek) %>%
+  summarize(counts = n()) %>%
+  ggplot(aes(x = DayOfWeek, y = counts, fill = CRIME_TYPE)) +
+  geom_col(position = 'dodge') +
+  labs(title = 'Counts of Crimes by Day of Week and Crime Type', x = 'Day of Week', y = 'Counts of Crimes') +
+  theme_minimal()
+print(df_weekday)
+```
+
+```{r}
+df_month <- df %>%
+  group_by(CRIME_TYPE, MONTH) %>%
+  summarize(counts = n()) %>%
+  ggplot(aes(x = MONTH, y = counts, fill = CRIME_TYPE)) +
+  geom_col(position = 'dodge') +
+  labs(title = 'Counts of Crimes by Month and Crime Type', x = 'Month', y = 'Counts of Crimes') +
+  theme_minimal()
+print(df_month)
+```
+```{r}
+df$time_period <- cut(df$HOUR, breaks = c(-1, 6, 12, 18, 24), labels = c('0-6', '6-12', '12-18', '18-24'), include.lowest = TRUE)
+df_time <- df %>%
+  group_by(CRIME_TYPE, time_period) %>%
+  summarize(counts = n()) %>%
+  ggplot(aes(x = time_period, y = counts, fill = CRIME_TYPE)) +
+  geom_col(position = 'dodge') +
+  labs(title = 'Counts of Crimes by Time of Day and Crime Type', x = 'Time of Day', y = 'Counts of Crimes') +
+  theme_minimal()
+print(df_time)
+```
+```{r}
+df_risk <- df %>%
+  group_by(RISK_TYPE, time_period) %>%
+  summarize(counts = n()) %>%
+  ggplot(aes(x = time_period, y = counts, fill = RISK_TYPE)) +
+  geom_col(position = 'dodge') +
+  labs(title = 'Counts of Crimes by Time of Day and Risk Type', x = 'Time of Day', y = 'Counts of Crimes') +
+  theme_minimal()
+print(df_risk)
+```
+```{r}
+#The crime analysis conducted for Little Rock, Arkansas, revealed some important insights about the patterns and trends in crime. Non-violent crimes were found to be more frequent than violent crimes. The analysis showed that the number of crimes was highest during the weekdays, especially on Fridays, and the number of crimes was higher during the summer months. The data also indicated that the number of crimes was higher in the evening and night periods.
+
+#The analysis also showed that non-violent crimes with no weapon were considered low risk, while all other crimes were considered high risk. This information could be useful for law enforcement agencies to allocate their resources effectively and focus on preventing high-risk crimes.
+
+#In conclusion, the analysis provides valuable insights into the nature and patterns of crimes in Little Rock, which could be used to enhance public safety and reduce the incidence of crime. By identifying the most common types of crimes and locations where they occur, law enforcement agencies can develop targeted strategies to prevent crimes and allocate resources effectively. Overall, the findings of this analysis demonstrate the power of data analysis in identifying patterns and trends that can inform decision-making and enhance public safety.
+```
+
